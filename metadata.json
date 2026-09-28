@@ -1,0 +1,6 @@
+{
+  "name": "Oakridge University - Student Portal",
+  "description": "Secure student authentication portal and academic workspace for Oakridge University students to access grades, class schedules, enrolled courses, and campus notices.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
