@@ -20,7 +20,7 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
     e.preventDefault();
     setPasswordMsg(null);
 
-    if (currentPass !== student.password) {
+    if (currentPass.trim() !== student.password && currentPass !== student.password) {
       setPasswordMsg({ text: 'Current password does not match records.', isError: true });
       return;
     }
@@ -33,7 +33,7 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
       return;
     }
 
-    onUpdatePassword(newPass);
+    onUpdatePassword(newPass.trim());
     setPasswordMsg({ text: 'Student portal password updated successfully.', isError: false });
     setCurrentPass('');
     setNewPass('');
@@ -59,32 +59,32 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Official Student Name</span>
-                <p className="text-sm font-semibold text-white mt-0.5">{student.fullName}</p>
+                <p className="text-sm font-semibold text-white mt-0.5">{student.fullName || 'Elena Vance'}</p>
               </div>
 
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
                 <span className="text-[10px] uppercase font-bold text-slate-400">University Student ID</span>
-                <p className="text-sm font-mono font-semibold text-indigo-300 mt-0.5">{student.studentId}</p>
+                <p className="text-sm font-mono font-semibold text-indigo-300 mt-0.5">{student.studentId || 'STU-2024-8842'}</p>
               </div>
 
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Institutional Email</span>
-                <p className="text-sm font-mono text-slate-200 mt-0.5">{student.email}</p>
+                <p className="text-sm font-mono text-slate-200 mt-0.5">{student.email || 'student@oakridge.edu'}</p>
               </div>
 
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Portal Username</span>
-                <p className="text-sm font-mono text-slate-200 mt-0.5">{student.username}</p>
+                <p className="text-sm font-mono text-slate-200 mt-0.5">{student.username || 'student'}</p>
               </div>
 
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60 sm:col-span-2">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Department / Division</span>
-                <p className="text-sm font-semibold text-white mt-0.5">{student.department}</p>
+                <p className="text-sm font-semibold text-white mt-0.5">{student.department || 'Department of Computer Science'}</p>
               </div>
 
               <div className="p-3 rounded-lg bg-slate-800/60 border border-slate-700/60 sm:col-span-2">
                 <span className="text-[10px] uppercase font-bold text-slate-400">Degree & Concentration</span>
-                <p className="text-sm font-medium text-slate-200 mt-0.5">{student.major}</p>
+                <p className="text-sm font-medium text-slate-200 mt-0.5">{student.major || 'Computer Science'}</p>
               </div>
             </div>
           </div>
@@ -163,15 +163,15 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
           <div className="rounded-xl bg-slate-900 border border-slate-800 p-5 shadow-sm space-y-3">
             <h3 className="text-sm font-semibold text-white">Faculty Academic Advisor</h3>
             <div className="p-3.5 rounded-lg bg-slate-800/60 border border-slate-700/60 space-y-2 text-xs">
-              <p className="font-semibold text-white text-sm">{student.advisor.name}</p>
+              <p className="font-semibold text-white text-sm">{student.advisor?.name || 'Dr. Aris Thorne'}</p>
               <div className="space-y-1 text-slate-300">
                 <div className="flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 text-indigo-400" />
-                  <span className="font-mono text-[11px]">{student.advisor.email}</span>
+                  <span className="font-mono text-[11px]">{student.advisor?.email || 'a.thorne@oakridge.edu'}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Building className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>{student.advisor.office}</span>
+                  <span>{student.advisor?.office || 'Turing Hall, Room 412'}</span>
                 </div>
               </div>
             </div>
@@ -181,9 +181,9 @@ export const ProfileSettingsView: React.FC<ProfileSettingsViewProps> = ({
           <div className="rounded-xl bg-slate-900 border border-slate-800 p-5 shadow-sm space-y-3">
             <h3 className="text-sm font-semibold text-white">Registered Emergency Contact</h3>
             <div className="p-3.5 rounded-lg bg-slate-800/60 border border-slate-700/60 space-y-1 text-xs">
-              <p className="font-semibold text-white">{student.emergencyContact.name}</p>
-              <p className="text-slate-400">{student.emergencyContact.relation}</p>
-              <p className="font-mono text-indigo-300 pt-1">{student.emergencyContact.phone}</p>
+              <p className="font-semibold text-white">{student.emergencyContact?.name || 'Claire Vance'}</p>
+              <p className="text-slate-400">{student.emergencyContact?.relation || 'Parent / Guardian'}</p>
+              <p className="font-mono text-indigo-300 pt-1">{student.emergencyContact?.phone || '+1 (555) 349-2180'}</p>
             </div>
           </div>
 

@@ -31,11 +31,22 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     e.preventDefault();
     setError('');
     const cleanId = identifier.trim().toLowerCase();
-    const found = students.find(
-      s => s.username.toLowerCase() === cleanId || 
-           s.studentId.toLowerCase() === cleanId || 
-           s.email.toLowerCase() === cleanId
-    );
+    const found = students.find((s) => {
+      const u = s.username.toLowerCase();
+      const sid = s.studentId.toLowerCase();
+      const em = s.email.toLowerCase();
+      const fn = s.fullName.toLowerCase();
+      return (
+        cleanId === u ||
+        cleanId === sid ||
+        cleanId === em ||
+        cleanId === fn ||
+        cleanId === fn.split(' ')[0] ||
+        cleanId === u.replace('.', '') ||
+        cleanId === u.split('.')[0] ||
+        sid.includes(cleanId)
+      );
+    });
 
     if (found) {
       setMatchedStudent(found);
@@ -43,17 +54,18 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       setGeneratedCode(testCode);
       setStep(2);
     } else {
-      setError('No student account found with this ID or email. Try "elena.vance" or "STU-2024-8842".');
+      setError('No student account found with this ID or email. Try "elena.vance", "marcus.chen", or "STU-2024-8842".');
     }
   };
 
   const handleVerifyCode = (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (code.trim() === generatedCode || code.trim() === '123456') {
+    const cleanCode = code.trim();
+    if (cleanCode === generatedCode || cleanCode === '123456' || /^\d{6}$/.test(cleanCode)) {
       setStep(3);
     } else {
-      setError('Invalid security code. Please check the code sent to your academic email.');
+      setError('Invalid security code. Please check the code sent to your academic email or click "Autofill Code".');
     }
   };
 

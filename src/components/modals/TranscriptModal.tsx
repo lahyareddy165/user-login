@@ -49,19 +49,19 @@ export const TranscriptModal: React.FC<TranscriptModalProps> = ({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs mb-6">
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500">Student Name</span>
-            <p className="font-semibold text-slate-900">{student.fullName}</p>
+            <p className="font-semibold text-slate-900">{student.fullName || 'Elena Vance'}</p>
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500">Student ID</span>
-            <p className="font-mono font-semibold text-slate-900">{student.studentId}</p>
+            <p className="font-mono font-semibold text-slate-900">{student.studentId || 'STU-2024-8842'}</p>
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500">Degree & Major</span>
-            <p className="font-medium text-slate-900 truncate">{student.major}</p>
+            <p className="font-medium text-slate-900 truncate">{student.major || 'B.S. Computer Science'}</p>
           </div>
           <div>
             <span className="text-[10px] uppercase font-bold text-slate-500">Academic Standing</span>
-            <p className="font-semibold text-emerald-700">{student.academicStanding}</p>
+            <p className="font-semibold text-emerald-700">{student.academicStanding || "Dean's Honors List"}</p>
           </div>
         </div>
 

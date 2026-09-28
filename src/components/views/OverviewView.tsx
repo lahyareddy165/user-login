@@ -67,21 +67,21 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
-                  Welcome back, {student.fullName.split(' ')[0]}
+                  Welcome back, {student.fullName ? student.fullName.split(' ')[0] : 'Student'}
                 </h1>
                 <span className="text-xs font-mono px-2 py-0.5 rounded bg-indigo-950/80 text-indigo-300 border border-indigo-800/60">
-                  {student.studentId}
+                  {student.studentId || 'STU-2024-8842'}
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-slate-300">
-                {student.major} · <span className="text-slate-400">{student.academicYear}</span>
+                {student.major || 'Undergraduate Studies'} · <span className="text-slate-400">{student.academicYear || 'Year 3'}</span>
               </p>
               <div className="flex items-center gap-3 text-xs text-slate-400 pt-1">
-                <span>{student.semester}</span>
+                <span>{student.semester || 'Fall Term 2026'}</span>
                 <span>·</span>
-                <span className="text-emerald-400 font-medium">{student.academicStanding}</span>
+                <span className="text-emerald-400 font-medium">{student.academicStanding || "Dean's Honors List"}</span>
                 <span>·</span>
-                <span>Advisor: {student.advisor.name}</span>
+                <span>Advisor: {student.advisor?.name || 'Dr. Aris Thorne'}</span>
               </div>
             </div>
           </div>
@@ -90,13 +90,13 @@ export const OverviewView: React.FC<OverviewViewProps> = ({
           <div className="flex items-center gap-4 bg-slate-800/40 border border-slate-700/60 rounded-xl p-3 shrink-0">
             <div className="text-center px-3 border-r border-slate-700/60">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Cumulative GPA</span>
-              <span className="font-mono text-xl font-bold text-white tabular-nums">{student.gpa.toFixed(2)}</span>
+              <span className="font-mono text-xl font-bold text-white tabular-nums">{(student.gpa ?? 3.84).toFixed(2)}</span>
               <span className="text-[10px] text-emerald-400 block font-medium">Top 5%</span>
             </div>
             <div className="text-center px-3 border-r border-slate-700/60">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Credits Done</span>
-              <span className="font-mono text-xl font-bold text-white tabular-nums">{student.creditsCompleted}</span>
-              <span className="text-[10px] text-slate-400 block font-mono">of {student.totalCreditsRequired} cr</span>
+              <span className="font-mono text-xl font-bold text-white tabular-nums">{student.creditsCompleted ?? 78}</span>
+              <span className="text-[10px] text-slate-400 block font-mono">of {student.totalCreditsRequired ?? 120} cr</span>
             </div>
             <div className="text-center px-3">
               <span className="text-[10px] uppercase font-bold text-slate-400 block">Courses Enrolled</span>

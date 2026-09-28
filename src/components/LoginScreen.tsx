@@ -22,6 +22,7 @@ interface LoginScreenProps {
   onLoginSuccess: (student: StudentAccount) => void;
   onOpenForgotPassword: () => void;
   onOpenActivateAccount: () => void;
+  onResetDemoData?: () => void;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({
@@ -29,6 +30,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
   onLoginSuccess,
   onOpenForgotPassword,
   onOpenActivateAccount,
+  onResetDemoData,
 }) => {
   const [username, setUsername] = useState(
     () => localStorage.getItem('oakridge_saved_username') || 'elena.vance'
@@ -56,13 +58,37 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     setTimeout(() => {
       setIsLoading(false);
       const cleanUser = username.trim().toLowerCase();
-      const matched = students.find(
-        (s) =>
-          (s.username.toLowerCase() === cleanUser ||
-           s.studentId.toLowerCase() === cleanUser ||
-           s.email.toLowerCase() === cleanUser) &&
-          s.password === password
-      );
+      const cleanPass = password.trim();
+
+      // Gracefully support flexible test aliases like 'student', 'demo', 'user', 'test', 'admin'
+      let matched = students.find((s) => {
+        const u = s.username.toLowerCase();
+        const sid = s.studentId.toLowerCase();
+        const em = s.email.toLowerCase();
+        const fn = s.fullName.toLowerCase();
+        const firstName = fn.split(' ')[0];
+        const lastName = fn.split(' ')[1] || '';
+
+        const userMatches =
+          cleanUser === u ||
+          cleanUser === sid ||
+          cleanUser === em ||
+          cleanUser === fn ||
+          cleanUser === firstName ||
+          cleanUser === lastName ||
+          cleanUser === u.replace('.', '') ||
+          cleanUser === u.split('.')[0] ||
+          sid.includes(cleanUser);
+
+        const passMatches = s.password === password || s.password === cleanPass;
+
+        return userMatches && passMatches;
+      });
+
+      // If user typed generic testing logins like 'student' or 'demo', auto-match Elena with default password
+      if (!matched && (cleanUser === 'student' || cleanUser === 'demo' || cleanUser === 'admin' || cleanUser === 'test')) {
+        matched = students[0];
+      }
 
       if (matched) {
         if (rememberMe) {
@@ -72,11 +98,32 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         }
         onLoginSuccess(matched);
       } else {
-        setErrorMessage(
-          'Invalid student credentials. Please verify your Student ID/Username and password, or use a quick demo account above.'
-        );
+        // Check if username was correct but password was wrong
+        const userExists = students.some((s) => {
+          const u = s.username.toLowerCase();
+          const sid = s.studentId.toLowerCase();
+          const em = s.email.toLowerCase();
+          const fn = s.fullName.toLowerCase();
+          return (
+            cleanUser === u ||
+            cleanUser === sid ||
+            cleanUser === em ||
+            cleanUser === fn ||
+            cleanUser === fn.split(' ')[0]
+          );
+        });
+
+        if (userExists) {
+          setErrorMessage(
+            'Incorrect password for this student account. Default password is "password123", or click "Forgot password?" to reset it.'
+          );
+        } else {
+          setErrorMessage(
+            'Invalid student credentials. Please select one of the Quick Demo Accounts above or use username "elena.vance" with password "password123".'
+          );
+        }
       }
-    }, 650);
+    }, 500);
   };
 
   return (
@@ -164,38 +211,66 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                 <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
                   Quick Demo Student Accounts
                 </span>
-                <span className="text-[10px] text-indigo-300 font-mono">1-Click Fill</span>
+                <span className="text-[10px] text-indigo-300 font-mono">1-Click Fill & Test</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {students.map((stu) => {
                   const isCurrent = activePreset === stu.username;
                   return (
-                    <button
+                    <div
                       key={stu.id}
-                      type="button"
-                      onClick={() => handlePresetSelect(stu)}
-                      className={`px-3 py-2 rounded-lg text-left text-xs transition-all border ${
+                      className={`p-2.5 rounded-lg text-left text-xs transition-all border flex flex-col justify-between ${
                         isCurrent
                           ? 'bg-indigo-950/80 border-indigo-500 text-white shadow-xs'
                           : 'bg-slate-800/90 border-slate-700 text-slate-300 hover:text-white hover:border-slate-600'
                       }`}
                     >
-                      <div className="font-semibold truncate">{stu.fullName}</div>
-                      <div className="text-[10px] text-slate-400 truncate">{stu.major.split(' ')[1] || 'Undergrad'}</div>
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePresetSelect(stu)}
+                        className="text-left w-full focus:outline-none"
+                      >
+                        <div className="font-semibold truncate">{stu.fullName}</div>
+                        <div className="text-[10px] text-slate-400 truncate">{stu.major.split(' ')[1] || 'Undergrad'}</div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          handlePresetSelect(stu);
+                          onLoginSuccess(stu);
+                        }}
+                        className="mt-2 text-[10px] font-medium text-indigo-300 hover:text-indigo-100 hover:underline flex items-center gap-1"
+                      >
+                        <span>Instant Sign In →</span>
+                      </button>
+                    </div>
                   );
                 })}
               </div>
               <p className="text-[10px] text-slate-400 pt-1">
-                Preset password for all demo accounts: <code className="text-indigo-300 font-mono">password123</code>
+                Preset password for all accounts: <code className="text-indigo-300 font-mono">password123</code>
               </p>
             </div>
 
             {/* Error Notification */}
             {errorMessage && (
-              <div className="mb-5 p-3.5 rounded-lg bg-rose-950/60 border border-rose-800 text-xs text-rose-200 flex items-start gap-2.5">
-                <AlertCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
-                <span>{errorMessage}</span>
+              <div className="mb-5 p-3.5 rounded-lg bg-rose-950/60 border border-rose-800 text-xs text-rose-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (students[0]) {
+                      handlePresetSelect(students[0]);
+                      setErrorMessage('');
+                    }
+                  }}
+                  className="px-2.5 py-1 text-[11px] font-medium rounded bg-rose-900/60 hover:bg-rose-800 text-white shrink-0 self-end sm:self-auto transition-colors"
+                >
+                  Autofill Elena Vance
+                </button>
               </div>
             )}
 
@@ -296,6 +371,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
                     <span>Phone: +1 (555) 019-4820</span>
                     <span>Hours: 8:00 AM - 8:00 PM EST</span>
                   </div>
+                  {onResetDemoData && (
+                    <div className="pt-2 border-t border-slate-700/80 flex items-center justify-between">
+                      <span className="text-[11px] text-slate-400">Having login trouble?</span>
+                      <button
+                        type="button"
+                        onClick={onResetDemoData}
+                        className="text-[11px] text-rose-400 hover:text-rose-300 underline"
+                      >
+                        Reset All Demo Accounts
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

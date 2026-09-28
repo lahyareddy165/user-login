@@ -66,21 +66,21 @@ export const StudentIdCardModal: React.FC<StudentIdCardModalProps> = ({
             <div className="space-y-1 text-xs">
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-slate-400">Full Name</p>
-                <p className="text-sm font-semibold text-white">{student.fullName}</p>
+                <p className="text-sm font-semibold text-white">{student.fullName || 'Elena Vance'}</p>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-slate-400">Student ID</p>
-                  <p className="font-mono text-xs font-semibold text-indigo-300">{student.studentId}</p>
+                  <p className="font-mono text-xs font-semibold text-indigo-300">{student.studentId || 'STU-2024-8842'}</p>
                 </div>
                 <div>
                   <p className="text-[10px] uppercase tracking-wider text-slate-400">Degree Level</p>
-                  <p className="font-medium text-slate-200">{student.degreeLevel}</p>
+                  <p className="font-medium text-slate-200">{student.degreeLevel || 'Undergraduate'}</p>
                 </div>
               </div>
               <div className="pt-1">
                 <p className="text-[10px] uppercase tracking-wider text-slate-400">Academic Program</p>
-                <p className="text-xs font-medium text-slate-300 truncate max-w-[240px]">{student.major}</p>
+                <p className="text-xs font-medium text-slate-300 truncate max-w-[240px]">{student.major || 'Computer Science'}</p>
               </div>
             </div>
           </div>

@@ -41,6 +41,7 @@ interface StudentPortalProps {
   onUpdatePassword: (newPass: string) => void;
   onSubmitAssignment: (assignmentId: string, submissionName: string) => void;
   onMarkNotificationsRead: () => void;
+  onResetDemoData?: () => void;
 }
 
 export const StudentPortal: React.FC<StudentPortalProps> = ({
@@ -54,6 +55,7 @@ export const StudentPortal: React.FC<StudentPortalProps> = ({
   onUpdatePassword,
   onSubmitAssignment,
   onMarkNotificationsRead,
+  onResetDemoData,
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'courses' | 'schedule' | 'grades' | 'profile'>('overview');
   const [showIdCardModal, setShowIdCardModal] = useState(false);

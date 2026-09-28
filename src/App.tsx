@@ -149,6 +149,17 @@ export default function App() {
     showToast('Assignment submitted successfully!');
   };
 
+  const handleResetDemoData = () => {
+    localStorage.removeItem('oakridge_students_data');
+    localStorage.removeItem('oakridge_courses_data');
+    localStorage.removeItem('oakridge_current_session');
+    localStorage.removeItem('oakridge_saved_username');
+    setStudents(INITIAL_STUDENTS);
+    setCourses(INITIAL_COURSES);
+    setCurrentStudent(null);
+    showToast('Reset all demo data to default accounts.');
+  };
+
   const handleMarkNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
   };
@@ -175,6 +186,7 @@ export default function App() {
           onUpdatePassword={handleUpdatePasswordFromProfile}
           onSubmitAssignment={handleSubmitAssignment}
           onMarkNotificationsRead={handleMarkNotificationsRead}
+          onResetDemoData={handleResetDemoData}
         />
       ) : (
         <LoginScreen
@@ -182,6 +194,7 @@ export default function App() {
           onLoginSuccess={handleLogin}
           onOpenForgotPassword={() => setShowForgotModal(true)}
           onOpenActivateAccount={() => setShowActivateModal(true)}
+          onResetDemoData={handleResetDemoData}
         />
       )}
 
